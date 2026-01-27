@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Seyid.Api/Seyid.Api.csproj" Id="cf6eb4b6-f5a2-47a8-a92a-fc2e99d6e9f0" />
+  <Project Path="Seyid.Business/Seyid.Business.csproj" Id="09c03280-02c3-45ad-965c-481661bea784" />
+  <Project Path="Seyid.Core/Seyid.Core.csproj" />
+  <Project Path="Seyid.DataAccess/Seyid.DataAccess.csproj" />
+</Solution>
