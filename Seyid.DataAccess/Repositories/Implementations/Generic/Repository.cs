@@ -34,9 +34,15 @@ namespace Seyid.DataAccess.Repositories.Implementations.Generic
             _context.Set<T>().Remove(entity);
         }
 
-        public IQueryable<T> GetAll()
+        public IQueryable<T> GetAll(bool ignoreQueryFilter = false)
         {
-            return _context.Set<T>();
+            var query = _context.Set<T>().AsQueryable();
+
+            if (ignoreQueryFilter)
+                query = query.IgnoreQueryFilters();
+
+
+            return query;
         }
 
         public async Task<T?> GetAsync(Expression<Func<T, bool>> expression)
@@ -45,16 +51,13 @@ namespace Seyid.DataAccess.Repositories.Implementations.Generic
             return entity;
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+
+        public async Task<T?> GetByIdAsync(Guid id)
         {
-            var result =await _context.Set<T>().FindAsync(id);
+            var result = await _context.Set<T>().FindAsync(id);
+
             return result;
 
-        }
-
-        public Task<T?> GetByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<int> SaveChangesAsync()

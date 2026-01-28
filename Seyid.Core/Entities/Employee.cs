@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Seyid.Core.Entities
 {
-    public class Employee:BaseEntity
+    public class Employee: BaseAuditableEntity
     {
         public string Name { get; set; } = string.Empty;
         public string Surname { get; set; } = string.Empty;
         public string ImagePath { get; set; } = string.Empty;
         public decimal Salary { get; set; }
-        public Department Department { get; set; }
+        public Department Department { get; set; } = null!;
         public Guid DepartmentId { get; set; }
 
     }
