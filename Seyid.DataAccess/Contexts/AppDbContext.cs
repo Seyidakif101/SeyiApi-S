@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Seyid.Core.Entities;
 using Seyid.DataAccess.Interceptor;
 using System;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace Seyid.DataAccess.Contexts
 {
-    internal class AppDbContext(BaseAuditableInterceptor _interceptor, DbContextOptions options) : DbContext(options)
+    internal class AppDbContext(BaseAuditableInterceptor _interceptor, DbContextOptions options) : IdentityDbContext<AppUser, AppRole, string>(options)
     {
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

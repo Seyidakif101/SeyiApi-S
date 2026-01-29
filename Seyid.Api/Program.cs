@@ -1,45 +1,58 @@
 using Seyid.Api.Middlewares;
 using Seyid.Business.ServiceRegistrations;
 using Seyid.DataAccess.ServiceRegistrations;
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Seyid.DataAccess.Abstractions;
+public partial class Program
 {
-    //builder.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
-    builder.AllowAnyOrigin()
-    .AllowAnyMethod()
-           .AllowAnyHeader();
-}));
+    private static async Task Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+        // Add services to the container.
 
-builder.Services.AddBusinessServices();
-builder.Services.AddDataAccessServices(builder.Configuration);
+        builder.Services.AddControllers();
+        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        builder.Services.AddOpenApi();
 
-var app = builder.Build();
+        builder.Services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+        {
+            //builder.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
+            builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+                   .AllowAnyHeader();
+        }));
 
-app.UseMiddleware<GlobalExceptionHandler>();
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
 
-app.UseCors("MyPolicy");
+        builder.Services.AddBusinessServices();
+        builder.Services.AddDataAccessServices(builder.Configuration);
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger(); // Enables middleware to serve generated Swagger as a JSON endpoint
-    app.UseSwaggerUI(); // Enables middleware to serve swagger-ui (HTML, JS, CSS, etc.)
+        var app = builder.Build();
+
+        var scope = app.Services.CreateScope();
+        var initalizer = scope.ServiceProvider.GetRequiredService<IContextInitalizer>();
+        await initalizer.InitDatabaseAsync();
+
+        app.UseMiddleware<GlobalExceptionHandler>();
+
+        app.UseCors("MyPolicy");
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger(); // Enables middleware to serve generated Swagger as a JSON endpoint
+            app.UseSwaggerUI(); // Enables middleware to serve swagger-ui (HTML, JS, CSS, etc.)
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        await app.RunAsync();
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
