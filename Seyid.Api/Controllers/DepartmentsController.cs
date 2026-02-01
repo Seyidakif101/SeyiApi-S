@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Seyid.Business.Dtos.DepartmentDtos;
 using Seyid.Business.Services.Abstractions;
@@ -7,6 +8,7 @@ namespace Seyid.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Member")]
     public class DepartmentsController(IDepartmentService _service) : ControllerBase
     {
         [HttpGet]
